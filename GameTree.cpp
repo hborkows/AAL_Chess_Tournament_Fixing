@@ -17,6 +17,7 @@ GameTree::GameTree(Player *winningPlayer, std::vector<Player*> players)
     this->root = nullptr;
     this->winningPlayer = winningPlayer;
     this->players = players;
+    this->baseData = players;
     this->treeDepth = static_cast<size_t>(log2(players.size())); //use of static_cast, because number of players is specified to be 2^n
                                                                 // and log2(2^n) = n which is an integer
 }
@@ -30,6 +31,27 @@ void GameTree::treeInit()
 {
     root = new Node(winningPlayer, nullptr);
 }
+
+void GameTree::playersStrengthInit()
+{
+    for(auto i: players)
+    {
+        i->calculateStrength();
+    }
+
+    for(auto i: players)
+    {
+        i->sortOpponents();
+    }
+}
+
+//void GameTree::randomisePlayersStrength()
+//{
+//    for(auto i: players)
+//    {
+//        i->randomiseOpponents();
+//    }
+//}
 
 void GameTree::deleteTree(Node* node)
 {
@@ -51,23 +73,23 @@ bool GameTree::placePlayersBrutalRec(Node *current, Player *losingPlayer, size_t
 
     if(!atLeaf)
     {
-        current->left = new Node(current->player1, current);
-
         for (auto i: current->player1->getLosingOpponents())
         {
             if (leftDone)
                 break;
+            deleteTree(current->left);
+            current->left = new Node(current->player1, current);
             leftDone = placePlayersBrutalRec(current->left, i, depth);
         }
 
         if(leftDone)
         {
-            current->right = new Node(current->player2, current);
-
             for (auto i: current->player2->getLosingOpponents())
             {
                 if (rightDone)
                     break;
+                deleteTree(current->right);
+                current->right = new Node(current->player2, current);
                 rightDone = placePlayersBrutalRec(current->right, i, depth);
             }
         }
@@ -94,16 +116,7 @@ Node* GameTree::placePlayersBrutal()
 Node* GameTree::placePlayersStrength()
 {
     treeInit();
-
-    for(auto i: players)
-    {
-        i->calculateStrength();
-    }
-
-    for(auto i: players)
-    {
-        i->sortOpponents();
-    }
+    playersStrengthInit();
 
     for(auto i: winningPlayer->getLosingOpponents())
     {
@@ -123,7 +136,17 @@ bool GameTree::placePlayersCSPRec(Node *current, Player *losingPlayer, size_t de
 
 Node* GameTree::placePlayersCSP()
 {
-    //TODO
+    treeInit();
+
+    for(auto i: winningPlayer->getLosingOpponents())
+    {
+        if(placePlayersCSPRec(root,i,1))
+            break;
+    }
+
+    Node* result = root;
+    root = nullptr;
+    return result;
 }
 
 bool GameTree::placePlayersCSPStrengthRec(Node *current, Player *losingPlayer, size_t depth)

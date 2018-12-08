@@ -6,6 +6,7 @@
 
 Player::Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, std::string id) : id(id)
 {
+    used = false;
     this->losingOpponents.swap(losingOpponents);
     this->winningOpponents.swap(winningOpponents);
 }
@@ -13,6 +14,11 @@ Player::Player(std::vector<Player*> losingOpponents, std::vector<Player*> winnin
 void Player::sortOpponents()
 {
     std::sort(losingOpponents.begin(), losingOpponents.end());
+}
+
+void Player::randomiseOpponents()
+{
+    std::random_shuffle(losingOpponents.begin(),losingOpponents.end());
 }
 
 Player& Player::operator=(const Player &other)
