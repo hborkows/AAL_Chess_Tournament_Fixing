@@ -23,7 +23,7 @@ GameTree::GameTree(Player *winningPlayer, std::vector<Player*> players)
 
 GameTree::~GameTree()
 {
-    deleteTree();
+    deleteTree(root);
 }
 
 void GameTree::treeInit()
@@ -31,14 +31,14 @@ void GameTree::treeInit()
     root = new Node(winningPlayer, nullptr);
 }
 
-void GameTree::deleteTree()
+void GameTree::deleteTree(Node* node)
 {
-    //TODO
-}
-
-std::vector<Player*> GameTree::findLeaves()
-{
-    //TODO
+    if(node != nullptr)
+    {
+        deleteTree(node->left);
+        deleteTree(node->right);
+        delete node;
+    }
 }
 
 bool GameTree::placePlayersBrutalRec(Node *current, Player *losingPlayer, size_t depth)
@@ -76,31 +76,62 @@ bool GameTree::placePlayersBrutalRec(Node *current, Player *losingPlayer, size_t
     return (leftDone && rightDone) || atLeaf;
 }
 
-std::vector<Player*> GameTree::placePlayersBrutal()
+Node* GameTree::placePlayersBrutal()
 {
     treeInit();
-    Node* current = root;
 
     for(auto i: winningPlayer->getLosingOpponents())
     {
-        if(placePlayersBrutalRec(current, i, 1))
+        if(placePlayersBrutalRec(root, i, 1))
             break;
     }
 
-    return findLeaves();
+    Node* result = root;
+    root = nullptr;
+    return result;
 }
 
-std::vector<Player*> GameTree::placePlayersStrength()
+Node* GameTree::placePlayersStrength()
+{
+    treeInit();
+
+    for(auto i: players)
+    {
+        i->calculateStrength();
+    }
+
+    for(auto i: players)
+    {
+        i->sortOpponents();
+    }
+
+    for(auto i: winningPlayer->getLosingOpponents())
+    {
+        if(placePlayersBrutalRec(root,i,1))
+            break;
+    }
+
+    Node* result = root;
+    root = nullptr;
+    return result;
+}
+
+bool GameTree::placePlayersCSPRec(Node *current, Player *losingPlayer, size_t depth)
 {
     //TODO
 }
 
-std::vector<Player*> GameTree::placePlayersCSP()
+Node* GameTree::placePlayersCSP()
 {
     //TODO
 }
 
-std::vector<Player*> GameTree::placePlayersCSPStrength()
+bool GameTree::placePlayersCSPStrengthRec(Node *current, Player *losingPlayer, size_t depth)
+{
+    //TODO
+}
+
+Node* GameTree::placePlayersCSPStrength()
 {
     //TODO
 }

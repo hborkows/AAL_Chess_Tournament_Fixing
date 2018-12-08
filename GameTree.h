@@ -25,23 +25,23 @@ class GameTree
     size_t treeDepth;
 
     std::vector<Player*> players;
-
-    void treeInit();
-    void deleteTree();
-    std::vector<Player*> findLeaves();
-    bool placePlayersBrutalRec(Node* current, Player* losingPlayer, size_t depth);
-
-public:
     Player* winningPlayer;
 
+    void treeInit();
+    void deleteTree(Node* node);
+    bool placePlayersBrutalRec(Node* current, Player* losingPlayer, size_t depth);
+    bool placePlayersCSPRec(Node* current, Player* losingPlayer, size_t depth);
+    bool placePlayersCSPStrengthRec(Node* current, Player* losingPlayer, size_t depth);
+
+public:
     GameTree() = default;
     GameTree(Player* winningPlayer, std::vector<Player*> players);
     ~GameTree();
 
-    std::vector<Player*> placePlayersBrutal();
-    std::vector<Player*> placePlayersStrength();
-    std::vector<Player*> placePlayersCSP();
-    std::vector<Player*> placePlayersCSPStrength();
+    Node* placePlayersBrutal();
+    Node* placePlayersStrength();
+    Node* placePlayersCSP();
+    Node* placePlayersCSPStrength();
 };
 
 

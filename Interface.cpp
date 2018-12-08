@@ -10,17 +10,17 @@ Interface::Interface(GameTree *gameTree, DataGenerator *dataGenerator)
     this->dataGenerator = dataGenerator;
 }
 
-void Interface::solveBasic()
+void Interface::solveBasic(size_t algorithm)
 {
     //TODO
 }
 
-void Interface::solveRandomData()
+void Interface::solveRandomData(size_t algorithm)
 {
     //TODO
 }
 
-void Interface::solveMeasureTime()
+void Interface::solveMeasureTime(size_t algorithm)
 {
     //TODO
 }

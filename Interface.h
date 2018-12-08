@@ -16,9 +16,9 @@ class Interface
 public:
     Interface(GameTree*, DataGenerator*);
 
-    void solveBasic();
-    void solveRandomData();
-    void solveMeasureTime();
+    void solveBasic(size_t algorithm);
+    void solveRandomData(size_t algorithm);
+    void solveMeasureTime(size_t algorithm);
 };
 
 
