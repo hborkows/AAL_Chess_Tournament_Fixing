@@ -1,2 +1,2 @@
 # AAL_Chess_Tournament_Fixing
-University assingment for the algorithm analysis class.
+Projekt na uczelnię z przedmiotu Analiza Algorytmów.
