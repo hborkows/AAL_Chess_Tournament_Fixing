@@ -4,10 +4,10 @@
 
 #include "Player.h"
 
-Player::Player(std::vector<Player> losingOpponents, std::vector<Player> winningOpponents, std::string id) : id(id)
+Player::Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, std::string id) : id(id)
 {
-    this->losingOpponents = losingOpponents;
-    this->winningOpponents = winningOpponents;
+    this->losingOpponents.swap(losingOpponents);
+    this->winningOpponents.swap(winningOpponents);
 }
 
 void Player::sortOpponents()

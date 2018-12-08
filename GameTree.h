@@ -5,6 +5,7 @@
 #ifndef AAL_GAMETREE_H
 #define AAL_GAMETREE_H
 
+#include <cmath>
 #include "Player.h"
 
 struct Node
@@ -21,20 +22,26 @@ struct Node
 class GameTree
 {
     Node* root;
-    Node* current;
+    size_t treeDepth;
 
-    std::vector<Player> players;
+    std::vector<Player*> players;
+
+    void treeInit();
+    void deleteTree();
+    std::vector<Player*> findLeaves();
+    bool placePlayersBrutalRec(Node* current, Player* losingPlayer, size_t depth);
 
 public:
     Player* winningPlayer;
 
     GameTree() = default;
-    GameTree(Player* winningPlayer, std::vector<Player> players);
+    GameTree(Player* winningPlayer, std::vector<Player*> players);
+    ~GameTree();
 
-    std::vector<Player> placePlayersBrutal();
-    std::vector<Player> placePlayersStrength();
-    std::vector<Player> placePlayersCSP();
-    std::vector<Player> placePlayersCSPStrength();
+    std::vector<Player*> placePlayersBrutal();
+    std::vector<Player*> placePlayersStrength();
+    std::vector<Player*> placePlayersCSP();
+    std::vector<Player*> placePlayersCSPStrength();
 };
 
 
