@@ -52,7 +52,6 @@ bool GameTree::placePlayersBrutalRec(Node *current, Player *losingPlayer, size_t
     if(!atLeaf)
     {
         current->left = new Node(current->player1, current);
-        current->right = new Node(current->player2, current);
 
         for (auto i: current->player1->getLosingOpponents())
         {
@@ -61,11 +60,16 @@ bool GameTree::placePlayersBrutalRec(Node *current, Player *losingPlayer, size_t
             leftDone = placePlayersBrutalRec(current->left, i, depth);
         }
 
-        for (auto i: current->player2->getLosingOpponents())
+        if(leftDone)
         {
-            if (rightDone)
-                break;
-            rightDone = placePlayersBrutalRec(current->right, i, depth);
+            current->right = new Node(current->player2, current);
+
+            for (auto i: current->player2->getLosingOpponents())
+            {
+                if (rightDone)
+                    break;
+                rightDone = placePlayersBrutalRec(current->right, i, depth);
+            }
         }
     }
 
