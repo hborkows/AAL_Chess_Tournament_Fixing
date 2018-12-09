@@ -31,10 +31,10 @@ class GameTree
     void treeInit();
     void playersStrengthInit();
     //void randomisePlayersStrength();
+    bool domainEmpty();
     void deleteTree(Node* node);
     bool placePlayersBrutalRec(Node* current, Player* losingPlayer, size_t depth);
     bool placePlayersCSPRec(Node* current, Player* losingPlayer, size_t depth);
-    bool placePlayersCSPStrengthRec(Node* current, Player* losingPlayer, size_t depth);
 
 public:
     GameTree() = default;

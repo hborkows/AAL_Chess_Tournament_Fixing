@@ -26,8 +26,10 @@ public:
 
     void setUsed(const bool& flag) {used = flag;};
     bool isUsed() {return used;};
+    bool noLosingOpponents();
     long getStrength() const {return strength;};
     std::vector<Player*> getLosingOpponents() {return losingOpponents;};
+    std::vector<Player*> getWinningOpponents() {return winningOpponents;};
     int calculateStrength(){strength = winningOpponents.size() - losingOpponents.size();};
     void sortOpponents();
     void randomiseOpponents();

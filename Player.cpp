@@ -11,6 +11,16 @@ Player::Player(std::vector<Player*> losingOpponents, std::vector<Player*> winnin
     this->winningOpponents.swap(winningOpponents);
 }
 
+bool Player::noLosingOpponents()
+{
+    for(auto i: losingOpponents)
+    {
+        if(!(i->isUsed()))
+            return false;
+    }
+    return true;
+}
+
 void Player::sortOpponents()
 {
     std::sort(losingOpponents.begin(), losingOpponents.end());

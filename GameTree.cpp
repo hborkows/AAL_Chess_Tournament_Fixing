@@ -53,6 +53,17 @@ void GameTree::playersStrengthInit()
 //    }
 //}
 
+bool GameTree::domainEmpty()
+{
+    for(auto i: players)
+    {
+        if(!(i->isUsed()))
+            if(i->noLosingOpponents())
+                return true;
+    }
+    return false;
+}
+
 void GameTree::deleteTree(Node* node)
 {
     if(node != nullptr)
@@ -115,18 +126,8 @@ Node* GameTree::placePlayersBrutal()
 
 Node* GameTree::placePlayersStrength()
 {
-    treeInit();
     playersStrengthInit();
-
-    for(auto i: winningPlayer->getLosingOpponents())
-    {
-        if(placePlayersBrutalRec(root,i,1))
-            break;
-    }
-
-    Node* result = root;
-    root = nullptr;
-    return result;
+    return placePlayersBrutal();
 }
 
 bool GameTree::placePlayersCSPRec(Node *current, Player *losingPlayer, size_t depth)
@@ -149,12 +150,8 @@ Node* GameTree::placePlayersCSP()
     return result;
 }
 
-bool GameTree::placePlayersCSPStrengthRec(Node *current, Player *losingPlayer, size_t depth)
-{
-    //TODO
-}
-
 Node* GameTree::placePlayersCSPStrength()
 {
-    //TODO
+    playersStrengthInit();
+    return placePlayersCSP();
 }
