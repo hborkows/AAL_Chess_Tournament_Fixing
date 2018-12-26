@@ -13,10 +13,12 @@ struct Node
     Node* parent;
     Node* left;
     Node* right;
+    int depth;
     Player* player1;
     Player* player2;
 
     Node(Player*, Node* parent);
+    Node(Player*, Node* parent, int depth);
 };
 
 class GameTree
@@ -25,6 +27,7 @@ class GameTree
     size_t treeDepth;
 
     std::vector<Player*> players;
+    std::vector<Node*> nodesToCheck;
     std::vector<Player*> baseData;
     Player* winningPlayer;
 
@@ -33,6 +36,10 @@ class GameTree
     //void randomisePlayersStrength();
     bool domainEmpty();
     void deleteTree(Node* node);
+    void createTree();
+    void createTreeRec(Node* current, int currentDepth);
+    std::vector<Node*> treeLevel(int level);
+    void treeLevelRec(Node* current, int level, std::vector<Node*> nodes);
     bool placePlayersBrutalRec(Node* current, Player* losingPlayer, size_t depth);
     bool placePlayersCSPRec(Node* current, Player* losingPlayer, size_t depth);
 
