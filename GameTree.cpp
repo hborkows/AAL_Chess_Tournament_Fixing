@@ -98,7 +98,7 @@ void GameTree::createTreeRec(Node* current, int currentDepth)
 void GameTree::createTree()
 {
     treeInit();
-    createTreeRec(root, 0);
+    createTreeRec(root, 1);
 }
 
 void GameTree::treeLevelRec(Node* current, int level, std::vector<Node *> nodes)
@@ -182,7 +182,12 @@ bool GameTree::placePlayersCSPRec(Node *current, Player *losingPlayer, size_t de
     bool rightDone = false;
     bool atLeaf = depth >= treeDepth;
     current->player2 = losingPlayer;
+    std::vector<Node*> level = treeLevel(depth);
 
+    if(!atLeaf)
+    {
+
+    }
 
 //    if(!atLeaf)
 //    {

@@ -19,6 +19,7 @@ struct Node
 
     Node(Player*, Node* parent);
     Node(Player*, Node* parent, int depth);
+    
 };
 
 class GameTree
