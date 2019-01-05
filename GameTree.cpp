@@ -12,15 +12,6 @@ Node::Node(Player* player, Node* parent)
     this->right = nullptr;
 }
 
-Node::Node(Player *player, Node *parent, int depth)
-{
-    player1 = player;
-    this->parent = parent;
-    this->left = nullptr;
-    this->right = nullptr;
-    this->depth = depth;
-}
-
 GameTree::GameTree(Player *winningPlayer, std::vector<Player*> players)
 {
     this->root = nullptr;
@@ -84,39 +75,24 @@ void GameTree::deleteTree(Node* node)
     }
 }
 
-void GameTree::createTreeRec(Node* current, int currentDepth)
-{
-    if(currentDepth >= treeDepth)
-        return;
-    current->left = new Node(nullptr, nullptr, currentDepth);
-    current->right = new Node(nullptr, nullptr, currentDepth);
-    currentDepth++;
-    createTreeRec(current->left, currentDepth);
-    createTreeRec(current->right, currentDepth);
-}
-
-void GameTree::createTree()
-{
-    treeInit();
-    createTreeRec(root, 1);
-}
-
-void GameTree::treeLevelRec(Node* current, int level, std::vector<Node *> nodes)
-{
-    if(current->depth == level)
-    {
-        nodes.push_back(current);
-        return;
-    }
-    treeLevelRec(current->left, level, nodes);
-    treeLevelRec(current->right, level, nodes);
-}
-
-std::vector<Node*> GameTree::treeLevel(int level)
+std::vector<Node*> GameTree::availNodes()
 {
     std::vector<Node*> result;
-    treeLevelRec(root, level, result);
+    availNodesRec(root, result);
     return result;
+}
+
+std::vector<Node*> GameTree::availNodesRec(Node *current, std::vector<Node *> nodes)
+{
+    if(current != nullptr)
+    {
+        if(current->left != nullptr)
+            availNodesRec(current->left, nodes);
+        if(current->right != nullptr)
+            availNodesRec(current->right, nodes);
+        if(current->left == nullptr && current->right == nullptr)
+            nodes.push_back(current);
+    }
 }
 
 bool GameTree::placePlayersBrutalRec(Node *current, Player *losingPlayer, size_t depth)
@@ -175,56 +151,50 @@ Node* GameTree::placePlayersStrength()
     return placePlayersBrutal();
 }
 
-bool GameTree::placePlayersCSPRec(Node *current, Player *losingPlayer, size_t depth)
+bool GameTree::placePlayersCSPRec(std::vector<Node*> nodes)
 {
-    depth++;
-    bool leftDone = false;
-    bool rightDone = false;
-    bool atLeaf = depth >= treeDepth;
-    current->player2 = losingPlayer;
-    std::vector<Node*> level = treeLevel(depth);
+    if(nodes.empty())
+        return true;
 
-    if(!atLeaf)
+    Node* current = *nodes.begin();
+    std::sort(current->player1->getWinningOpponents().begin(), current->player2->getWinningOpponents().end(), customWinningLess);
+
+    for(auto i: current->player1->getLosingOpponents())
     {
+        if(!i->isUsed())
+        {
+            current->player2 = i;
+            current->player2->setUsed(true);
+            current->left = new Node(current->player1, current);
+            current->right = new Node(current->player2, current);
 
+            if (domainEmpty())
+                continue;
+
+            std::vector<Node *> avail = availNodes();
+            std::sort(avail.begin(), avail.end(), customLosingLess);
+
+            if (placePlayersCSPRec(avail))
+                return true;
+            else
+            {
+                current->player2->setUsed(false);
+                delete current->left;
+                current->left = nullptr;
+                delete current->right;
+                current->right = nullptr;
+            }
+        }
     }
 
-//    if(!atLeaf)
-//    {
-//        for (auto i: current->player1->getLosingOpponents())
-//        {
-//            if (leftDone)
-//                break;
-//            deleteTree(current->left);
-//            current->left = new Node(current->player1, current);
-//            leftDone = placePlayersBrutalRec(current->left, i, depth);
-//        }
-//
-//        if(leftDone)
-//        {
-//            for (auto i: current->player2->getLosingOpponents())
-//            {
-//                if (rightDone)
-//                    break;
-//                deleteTree(current->right);
-//                current->right = new Node(current->player2, current);
-//                rightDone = placePlayersBrutalRec(current->right, i, depth);
-//            }
-//        }
-//    }
-
-    return (leftDone && rightDone) || atLeaf;
+    return false;
 }
 
 Node* GameTree::placePlayersCSP()
 {
-    createTree();
-
-    for(auto i: winningPlayer->getLosingOpponents())
-    {
-        if(placePlayersCSPRec(root,i,1))
-            break;
-    }
+    treeInit();
+    std::vector<Node*> nodes = availNodes();
+    placePlayersCSPRec(nodes);
 
     Node* result = root;
     root = nullptr;

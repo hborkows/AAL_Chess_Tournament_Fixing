@@ -13,14 +13,19 @@ struct Node
     Node* parent;
     Node* left;
     Node* right;
-    int depth;
     Player* player1;
     Player* player2;
 
     Node(Player*, Node* parent);
-    Node(Player*, Node* parent, int depth);
     
 };
+
+struct {
+    bool operator()(Node* a, Node* b) const
+    {
+        return a->player1->getLosingOpponents().size() < b->player1->getLosingOpponents().size();
+    }
+} customLosingLess;
 
 class GameTree
 {
@@ -37,12 +42,11 @@ class GameTree
     //void randomisePlayersStrength();
     bool domainEmpty();
     void deleteTree(Node* node);
-    void createTree();
     void createTreeRec(Node* current, int currentDepth);
-    std::vector<Node*> treeLevel(int level);
-    void treeLevelRec(Node* current, int level, std::vector<Node*> nodes);
+    std::vector<Node*> availNodes();
+    std::vector<Node*> availNodesRec(Node* current, std::vector<Node *> nodes);
     bool placePlayersBrutalRec(Node* current, Player* losingPlayer, size_t depth);
-    bool placePlayersCSPRec(Node* current, Player* losingPlayer, size_t depth);
+    bool placePlayersCSPRec(std::vector<Node*> nodes);
 
 public:
     GameTree() = default;

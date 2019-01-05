@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <functional>
 
 class Player
 {
@@ -38,16 +39,8 @@ public:
 struct {
     bool operator()(Player* a, Player* b) const
     {
-        return a->getLosingOpponents().size() < b->getLosingOpponents().size();
-    }
-} customLosingLess;
-
-struct {
-    bool operator()(Player* a, Player* b) const
-    {
         return a->getWinningOpponents().size() < b->getWinningOpponents().size();
     }
 } customWinningLess;
-
 
 #endif //AAL_PLAYER_H
