@@ -2,16 +2,17 @@
 #include <cstring>
 #include <string>
 #include "GameTree.h"
+#include "DataGenerator.h"
+#include "Interface.h"
 
 int main(int argc, char *argv[])
 {
     if (argc > 1)
     {
-        //GameTree gameTree();
         int i = 1;
         size_t playerCount;
         size_t alg;
-        size_t winningPlayer;
+        int winningPlayer;
 
         if (strcmp(argv[i], "-mode1") == 0)
         {
@@ -21,31 +22,23 @@ int main(int argc, char *argv[])
         {
             if (argc > 4)
             {
-                //DataGenerator dg();
                 i++;
                 playerCount = static_cast<size_t>(std::stoi(std::string(argv[i])));
                 i++;
                 alg = static_cast<size_t>(std::stoi(std::string(argv[i])));
-                i++;
-                winningPlayer = static_cast<size_t>(std::stoi(std::string(argv[i])));
-
-                switch (alg)
+                if(alg > 4 || alg < 1)
                 {
-                    case 1:
-
-                        break;
-                    case 2:
-
-                        break;
-                    case 3:
-
-                        break;
-                    case 4:
-
-                        break;
-                    default:
-                        break;
+                    std::cout << "Wrong algorithm argument!" << std::endl;
+                    return -1;
                 }
+                i++;
+                winningPlayer = std::stoi(std::string(argv[i]));
+
+                auto dg = new DataGenerator(playerCount,winningPlayer);
+                auto gameTree = new GameTree(dg->getWinningPlayer(), dg->generatePlayers());
+                Interface interface(gameTree, dg);
+
+                interface.solveRandomData(alg);
             }
             else
             {
@@ -60,27 +53,12 @@ int main(int argc, char *argv[])
                 i++;
                 playerCount = static_cast<size_t>(std::stoi(std::string(argv[i])));
                 i++;
-                alg = static_cast<size_t>(std::stoi(std::string(argv[i])));
-                i++;
-                winningPlayer = static_cast<size_t>(std::stoi(std::string(argv[i])));
+                winningPlayer = std::stoi(std::string(argv[i]));
 
-                switch (alg)
-                {
-                    case 1:
+                //DataGenerator dg(playerCount,winningPlayer);
+                //GameTree gameTree(dg.getWinningPlayer(), dg.generatePlayers());
 
-                        break;
-                    case 2:
 
-                        break;
-                    case 3:
-
-                        break;
-                    case 4:
-
-                        break;
-                    default:
-                        break;
-                }
             }
             else
             {
@@ -100,4 +78,6 @@ int main(int argc, char *argv[])
     {
         std::cout << "Too few arguments! Try with -help" << std::endl;
     }
+
+    return 0;
 }

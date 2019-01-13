@@ -5,6 +5,7 @@
 #ifndef AAL_INTERFACE_H
 #define AAL_INTERFACE_H
 
+#include <iostream>
 #include "GameTree.h"
 #include "DataGenerator.h"
 
@@ -12,6 +13,8 @@ class Interface
 {
     GameTree* gameTree;
     DataGenerator* dataGenerator;
+
+    void writeTree(Node* root);
 
 public:
     Interface(GameTree*, DataGenerator*);
