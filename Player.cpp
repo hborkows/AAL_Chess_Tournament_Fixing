@@ -4,7 +4,7 @@
 
 #include "Player.h"
 
-Player::Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, std::string id) : id(id)
+Player::Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, int id) : id(id)
 {
     used = false;
     this->losingOpponents.swap(losingOpponents);
@@ -37,4 +37,19 @@ Player& Player::operator=(const Player &other)
     this->strength = other.strength;
     this->losingOpponents = other.losingOpponents;
     this->winningOpponents = other.winningOpponents;
+}
+
+Player::Player(int id): id(id), losingOpponents(), winningOpponents()
+{
+
+}
+
+void Player::addLosingOpponent(Player *opponent)
+{
+    losingOpponents.push_back(opponent);
+}
+
+void Player::addWinningOpponent(Player *opponent)
+{
+    winningOpponents.push_back(opponent);
 }

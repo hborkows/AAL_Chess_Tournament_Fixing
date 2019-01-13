@@ -12,7 +12,7 @@
 
 class Player
 {
-    std::string id;
+    int id;
     bool used;
     std::vector<Player*> losingOpponents;
     std::vector<Player*> winningOpponents;
@@ -20,7 +20,8 @@ class Player
 
 public:
     Player() = default;
-    Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, std::string id = std::string());
+    Player(int id);
+    Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, int id);
 
     bool operator<(const Player& other) {return (this->strength) >= (other.strength);};
     Player& operator=(const Player& other);
@@ -29,8 +30,11 @@ public:
     bool isUsed() {return used;};
     bool noLosingOpponents();
     long getStrength() const {return strength;};
+    int getId() const {return id;};
     std::vector<Player*> getLosingOpponents() {return losingOpponents;};
+    void addLosingOpponent(Player* opponent);
     std::vector<Player*> getWinningOpponents() {return winningOpponents;};
+    void addWinningOpponent(Player* opponent);
     int calculateStrength(){strength = winningOpponents.size() - losingOpponents.size();};
     void sortOpponents();
     void randomiseOpponents();
