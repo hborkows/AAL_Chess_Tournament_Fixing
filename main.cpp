@@ -7,6 +7,7 @@
 
 int main(int argc, char *argv[])
 {
+
     if (argc > 1)
     {
         int i = 1;
@@ -16,7 +17,34 @@ int main(int argc, char *argv[])
 
         if (strcmp(argv[i], "-mode1") == 0)
         {
+            //std::cin >> playerCount;
+            //std::cin >> winningPlayer;
+            //std::cin >> alg;
+            int left, right;
+            bool leftWins;
+            std::vector<Pair> matchUps;
 
+//            while(std::cin >> left >> right >> leftWins)
+//            {
+//                matchUps.emplace_back(Pair(left, right, leftWins));
+//            }
+
+            playerCount = 2;
+            winningPlayer = 0;
+            alg = 3;
+
+            matchUps.emplace_back(Pair(0, 1, true));
+            matchUps.emplace_back(Pair(0, 2, false));
+            matchUps.emplace_back(Pair(0, 3, true));
+            matchUps.emplace_back(Pair(1, 2, false));
+            matchUps.emplace_back(Pair(1, 3, true));
+            matchUps.emplace_back(Pair(2, 3, false));
+
+            DataGenerator dg(playerCount, winningPlayer);
+            GameTree gameTree(dg.getWinningPlayer(), dg.generatePlayersNotRand(matchUps));
+            Interface interface(&gameTree, &dg);
+
+            interface.solveBasic(alg);
         }
         else if (strcmp(argv[i], "-mode2") == 0)
         {

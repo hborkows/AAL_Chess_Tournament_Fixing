@@ -86,3 +86,45 @@ std::vector<Player *> DataGenerator::generatePlayers()
 
     return result;
 }
+
+std::vector<Player *> DataGenerator::generatePlayersNotRand(std::vector<Pair> matchUps)
+{
+    std::vector<Player*> result;
+    for(int i = 0; i <= static_cast<int>(log2(playerCount)); i++)
+    {
+        auto player = new Player(i);
+        result.push_back(player);
+    }
+
+    for(auto i: result)
+    {
+        for(auto j: matchUps)
+        {
+            if(j.left == i->getId())
+            {
+                if (j.result)
+                {
+                    i->addLosingOpponent(result.at(j.right));
+                }
+                else
+                {
+                    i->addWinningOpponent(result.at(j.right));
+                }
+            }
+            else if(j.right == i->getId())
+            {
+                if(j.result)
+                {
+                    i->addWinningOpponent(result.at(j.left));
+                }
+                else
+                {
+                    i->addLosingOpponent(result.at(j.left));
+                }
+            }
+        }
+    }
+
+    winPlayer = result.at(winningPlayer);
+    return result;
+}

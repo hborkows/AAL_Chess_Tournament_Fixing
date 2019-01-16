@@ -17,6 +17,9 @@ struct Node
     Player* player2;
 
     Node(Player*, Node* parent);
+    Node(const Node& other);
+    Node(Node&& other) = default;
+    Node& operator=(Node&& other) = default;
     
 };
 
@@ -41,15 +44,16 @@ class GameTree
     void playersStrengthInit();
     //void randomisePlayersStrength();
     bool domainEmpty();
+    std::vector<Node*> domains();
     void deleteTree(Node* node);
     void createTreeRec(Node* current, int currentDepth);
     std::vector<Node*> availNodes();
-    std::vector<Node*> availNodesRec(Node* current, std::vector<Node *> nodes);
+    void availNodesRec(Node* current, std::vector<Node *>& nodes);
     bool placePlayersBrutalRec(Node* current, Player* losingPlayer, size_t depth);
-    bool placePlayersCSPRec(std::vector<Node*> nodes);
+    bool placePlayersCSPRec(std::vector<Node*> nodes, int depth);
 
 public:
-    GameTree() = default;
+    //GameTree() = default;
     GameTree(Player* winningPlayer, std::vector<Player*> players);
     ~GameTree();
 

@@ -12,26 +12,33 @@ Interface::Interface(GameTree *gameTree, DataGenerator *dataGenerator)
 
 void Interface::solveBasic(size_t algorithm)
 {
+    Node* resultRoot = nullptr;
+
     switch (algorithm)
     {
         case 1:
-
+            resultRoot = gameTree->placePlayersBrutal();
             break;
         case 2:
-
+            resultRoot = gameTree->placePlayersStrength();
             break;
         case 3:
-
+            resultRoot = gameTree->placePlayersCSP();
             break;
         case 4:
-
+            resultRoot = gameTree->placePlayersCSPStrength();
             break;
         default:
             break;
     }
+
+    std::cout << "Winning Player: " << dataGenerator->getWinningPlayer()->getId() << std::endl;
+    std::cout << "Calculated pairings in first round:" << std::endl;
+    writeTree(resultRoot);
 }
 
 void Interface::solveRandomData(size_t algorithm)
+
 {
     Node* resultRoot = nullptr;
 
@@ -53,7 +60,7 @@ void Interface::solveRandomData(size_t algorithm)
             break;
     }
 
-    std::cout << "Winning Player: " << dataGenerator->getWinningPlayer() << std::endl;
+    std::cout << "Winning Player: " << dataGenerator->getWinningPlayer()->getId() << std::endl;
     std::cout << "Calculated pairings in first round:" << std::endl;
     writeTree(resultRoot);
 }

@@ -20,7 +20,7 @@ class Player
 
 public:
     Player() = default;
-    Player(int id);
+    explicit Player(int id);
     Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, int id);
 
     bool operator<(const Player& other) {return (this->strength) >= (other.strength);};
@@ -31,17 +31,22 @@ public:
     bool noLosingOpponents();
     long getStrength() const {return strength;};
     int getId() const {return id;};
-    std::vector<Player*> getLosingOpponents() {return losingOpponents;};
+    std::vector<Player*> getLosingOpponents() const {return losingOpponents;};
     void addLosingOpponent(Player* opponent);
-    std::vector<Player*> getWinningOpponents() {return winningOpponents;};
+    std::vector<Player*> getWinningOpponents() const {return winningOpponents;};
     void addWinningOpponent(Player* opponent);
     int calculateStrength(){strength = winningOpponents.size() - losingOpponents.size();};
     void sortOpponents();
     void randomiseOpponents();
 };
 
+//bool customWinningLess(Player* a, Player* b)
+//{
+//    return a->getWinningOpponents().size() < b->getWinningOpponents().size();
+//}
+
 struct {
-    bool operator()(Player* a, Player* b) const
+    bool operator()(Player* a,Player* b) const
     {
         return a->getWinningOpponents().size() < b->getWinningOpponents().size();
     }

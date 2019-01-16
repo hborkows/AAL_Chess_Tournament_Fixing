@@ -17,6 +17,7 @@ struct Pair
     bool result;
 
     Pair(int l, int r): left(l), right(r), result() {};
+    Pair(int l, int r, bool result): left(l), right(r), result(result) {};
 };
 
 class DataGenerator
@@ -31,6 +32,7 @@ public:
 
     Player* getWinningPlayer() const;
     std::vector<Player*> generatePlayers();
+    std::vector<Player*> generatePlayersNotRand(std::vector<Pair> matchUps);
 };
 
 

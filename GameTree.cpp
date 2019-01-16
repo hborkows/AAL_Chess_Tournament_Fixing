@@ -12,6 +12,15 @@ Node::Node(Player* player, Node* parent)
     this->right = nullptr;
 }
 
+Node::Node(const Node &other)
+{
+    this->player1 = other.player1;
+    this->player2 = other.player2;
+    this->parent = other.parent;
+    this->left = other.left;
+    this->right = other.right;
+}
+
 GameTree::GameTree(Player *winningPlayer, std::vector<Player*> players)
 {
     this->root = nullptr;
@@ -54,14 +63,30 @@ void GameTree::playersStrengthInit()
 //    }
 //}
 
+std::vector<Node *> GameTree::domains()
+{
+    std::vector<Node*> result = availNodes();
+
+    for(int i = 0; i < result.size(); i++)
+    {
+        if(result[i]->player2 == nullptr)
+            result.erase(result.begin() + i);
+    }
+
+    return result;
+}
+
+
 bool GameTree::domainEmpty()
 {
-    for(auto i: players)
+    std::vector<Node*> dom = domains();
+
+    for(auto i: dom)
     {
-        if(!(i->isUsed()))
-            if(i->noLosingOpponents())
-                return true;
+        if(i->player1->noLosingOpponents())
+            return true;
     }
+
     return false;
 }
 
@@ -82,7 +107,7 @@ std::vector<Node*> GameTree::availNodes()
     return result;
 }
 
-std::vector<Node*> GameTree::availNodesRec(Node *current, std::vector<Node *> nodes)
+void GameTree::availNodesRec(Node *current, std::vector<Node *>& nodes)
 {
     if(current != nullptr)
     {
@@ -90,7 +115,7 @@ std::vector<Node*> GameTree::availNodesRec(Node *current, std::vector<Node *> no
             availNodesRec(current->left, nodes);
         if(current->right != nullptr)
             availNodesRec(current->right, nodes);
-        if(current->left == nullptr && current->right == nullptr)
+        if(current->left == nullptr && current->right == nullptr && current->player2 == nullptr)
             nodes.push_back(current);
     }
 }
@@ -102,32 +127,43 @@ bool GameTree::placePlayersBrutalRec(Node *current, Player *losingPlayer, size_t
     bool rightDone = false;
     bool atLeaf = depth >= treeDepth;
     current->player2 = losingPlayer;
+    current->player2->setUsed(true);
 
     if(!atLeaf)
     {
         for (auto i: current->player1->getLosingOpponents())
         {
-            if (leftDone)
-                break;
-            deleteTree(current->left);
-            current->left = new Node(current->player1, current);
-            leftDone = placePlayersBrutalRec(current->left, i, depth);
+            if(!(i->isUsed()))
+            {
+                if (leftDone)
+                    break;
+                if(current->left != nullptr)
+                    current->left->player2->setUsed(false);
+                deleteTree(current->left);
+                current->left = new Node(current->player1, current);
+                leftDone = placePlayersBrutalRec(current->left, i, depth);
+            }
         }
 
         if(leftDone)
         {
             for (auto i: current->player2->getLosingOpponents())
             {
-                if (rightDone)
-                    break;
-                deleteTree(current->right);
-                current->right = new Node(current->player2, current);
-                rightDone = placePlayersBrutalRec(current->right, i, depth);
+                if(!(i->isUsed()))
+                {
+                    if (rightDone)
+                        break;
+                    if(current->right != nullptr)
+                        current->right->player2->setUsed(false);
+                    deleteTree(current->right);
+                    current->right = new Node(current->player2, current);
+                    rightDone = placePlayersBrutalRec(current->right, i, depth);
+                }
             }
         }
     }
 
-    return (leftDone && rightDone) || atLeaf;
+    return atLeaf || (leftDone && rightDone);
 }
 
 Node* GameTree::placePlayersBrutal()
@@ -136,8 +172,11 @@ Node* GameTree::placePlayersBrutal()
 
     for(auto i: winningPlayer->getLosingOpponents())
     {
-        if(placePlayersBrutalRec(root, i, 1))
+        i->setUsed(true);
+        if(placePlayersBrutalRec(root, i, 0))
             break;
+        else
+            i->setUsed(false);
     }
 
     Node* result = root;
@@ -151,13 +190,15 @@ Node* GameTree::placePlayersStrength()
     return placePlayersBrutal();
 }
 
-bool GameTree::placePlayersCSPRec(std::vector<Node*> nodes)
+bool GameTree::placePlayersCSPRec(std::vector<Node*> nodes, int depth)
 {
+    depth++;
+
     if(nodes.empty())
         return true;
 
     Node* current = *nodes.begin();
-    std::sort(current->player1->getWinningOpponents().begin(), current->player2->getWinningOpponents().end(), customWinningLess);
+    //std::sort(current->player1->getLosingOpponents().begin(), current->player1->getLosingOpponents().end(), customWinningLess);
 
     for(auto i: current->player1->getLosingOpponents())
     {
@@ -165,8 +206,11 @@ bool GameTree::placePlayersCSPRec(std::vector<Node*> nodes)
         {
             current->player2 = i;
             current->player2->setUsed(true);
-            current->left = new Node(current->player1, current);
-            current->right = new Node(current->player2, current);
+            if(depth < treeDepth)
+            {
+                current->left = new Node(current->player1, current);
+                current->right = new Node(current->player2, current);
+            }
 
             if (domainEmpty())
                 continue;
@@ -174,11 +218,12 @@ bool GameTree::placePlayersCSPRec(std::vector<Node*> nodes)
             std::vector<Node *> avail = availNodes();
             std::sort(avail.begin(), avail.end(), customLosingLess);
 
-            if (placePlayersCSPRec(avail))
+            if (placePlayersCSPRec(avail, depth))
                 return true;
             else
             {
                 current->player2->setUsed(false);
+                current->player2 = nullptr;
                 delete current->left;
                 current->left = nullptr;
                 delete current->right;
@@ -194,7 +239,8 @@ Node* GameTree::placePlayersCSP()
 {
     treeInit();
     std::vector<Node*> nodes = availNodes();
-    placePlayersCSPRec(nodes);
+    root->player1->setUsed(true);
+    placePlayersCSPRec(nodes, 0);
 
     Node* result = root;
     root = nullptr;
