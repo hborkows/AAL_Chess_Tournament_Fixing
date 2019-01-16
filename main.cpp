@@ -17,28 +17,17 @@ int main(int argc, char *argv[])
 
         if (strcmp(argv[i], "-mode1") == 0)
         {
-            //std::cin >> playerCount;
-            //std::cin >> winningPlayer;
-            //std::cin >> alg;
+            std::cin >> playerCount;
+            std::cin >> winningPlayer;
+            std::cin >> alg;
             int left, right;
             bool leftWins;
             std::vector<Pair> matchUps;
 
-//            while(std::cin >> left >> right >> leftWins)
-//            {
-//                matchUps.emplace_back(Pair(left, right, leftWins));
-//            }
-
-            playerCount = 2;
-            winningPlayer = 0;
-            alg = 3;
-
-            matchUps.emplace_back(Pair(0, 1, true));
-            matchUps.emplace_back(Pair(0, 2, false));
-            matchUps.emplace_back(Pair(0, 3, true));
-            matchUps.emplace_back(Pair(1, 2, false));
-            matchUps.emplace_back(Pair(1, 3, true));
-            matchUps.emplace_back(Pair(2, 3, false));
+            while(std::cin >> left >> right >> leftWins)
+            {
+                matchUps.emplace_back(Pair(left, right, leftWins));
+            }
 
             DataGenerator dg(playerCount, winningPlayer);
             GameTree gameTree(dg.getWinningPlayer(), dg.generatePlayersNotRand(matchUps));
@@ -57,7 +46,7 @@ int main(int argc, char *argv[])
                 if(alg > 4 || alg < 1)
                 {
                     std::cout << "Wrong algorithm argument!" << std::endl;
-                    return -1;
+                    return 1;
                 }
                 i++;
                 winningPlayer = std::stoi(std::string(argv[i]));
@@ -75,18 +64,29 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[i], "-mode3") == 0)
         {
-            if (argc > 4)
+            if (argc > 5)
             {
-                //DataGenerator dg();
                 i++;
                 playerCount = static_cast<size_t>(std::stoi(std::string(argv[i])));
                 i++;
-                winningPlayer = std::stoi(std::string(argv[i]));
+                alg = static_cast<size_t>(std::stoi(std::string(argv[i])));
+                i++;
+                int repeatNum = std::stoi(std::string(argv[i]));
+                i++;
+                std::string fileName(argv[i]);
 
-                //DataGenerator dg(playerCount,winningPlayer);
-                //GameTree gameTree(dg.getWinningPlayer(), dg.generatePlayers());
+                for(int j = 1; j <= playerCount; j++)
+                {
+                    DataGenerator dg(j, 0);
+                    for(int k = 0; k < repeatNum; k++)
+                    {
+                        GameTree gameTree(dg.getWinningPlayer(), dg.generatePlayers());
+                        Interface interface(&gameTree, &dg);
 
-
+                        interface.solveMeasureTime(alg);
+                        interface.writeToFile(fileName);
+                    }
+                }
             }
             else
             {

@@ -21,7 +21,6 @@ class Player
 public:
     Player() = default;
     explicit Player(int id);
-    Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, int id);
 
     bool operator<(const Player& other) {return (this->strength) >= (other.strength);};
     Player& operator=(const Player& other);
@@ -29,27 +28,12 @@ public:
     void setUsed(const bool& flag) {used = flag;};
     bool isUsed() {return used;};
     bool noLosingOpponents();
-    long getStrength() const {return strength;};
     int getId() const {return id;};
     std::vector<Player*> getLosingOpponents() const {return losingOpponents;};
     void addLosingOpponent(Player* opponent);
-    std::vector<Player*> getWinningOpponents() const {return winningOpponents;};
     void addWinningOpponent(Player* opponent);
-    int calculateStrength(){strength = winningOpponents.size() - losingOpponents.size();};
+    void calculateStrength(){strength = winningOpponents.size() - losingOpponents.size();};
     void sortOpponents();
-    void randomiseOpponents();
 };
-
-//bool customWinningLess(Player* a, Player* b)
-//{
-//    return a->getWinningOpponents().size() < b->getWinningOpponents().size();
-//}
-
-struct {
-    bool operator()(Player* a,Player* b) const
-    {
-        return a->getWinningOpponents().size() < b->getWinningOpponents().size();
-    }
-} customWinningLess;
 
 #endif //AAL_PLAYER_H

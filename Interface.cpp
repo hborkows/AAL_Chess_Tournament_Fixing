@@ -4,7 +4,7 @@
 
 #include "Interface.h"
 
-Interface::Interface(GameTree *gameTree, DataGenerator *dataGenerator)
+Interface::Interface(GameTree *gameTree, DataGenerator *dataGenerator): lines()
 {
     this->gameTree = gameTree;
     this->dataGenerator = dataGenerator;
@@ -32,9 +32,14 @@ void Interface::solveBasic(size_t algorithm)
             break;
     }
 
-    std::cout << "Winning Player: " << dataGenerator->getWinningPlayer()->getId() << std::endl;
-    std::cout << "Calculated pairings in first round:" << std::endl;
-    writeTree(resultRoot);
+    if(resultRoot != nullptr)
+    {
+        std::cout << "Winning Player: " << dataGenerator->getWinningPlayer()->getId() << std::endl;
+        std::cout << "Calculated pairings in first round:" << std::endl;
+        writeTree(resultRoot);
+    }
+    else
+        std::cout << "Result not found." << std::endl;
 }
 
 void Interface::solveRandomData(size_t algorithm)
@@ -60,14 +65,42 @@ void Interface::solveRandomData(size_t algorithm)
             break;
     }
 
-    std::cout << "Winning Player: " << dataGenerator->getWinningPlayer()->getId() << std::endl;
-    std::cout << "Calculated pairings in first round:" << std::endl;
-    writeTree(resultRoot);
+    if(resultRoot != nullptr)
+    {
+        std::cout << "Winning Player: " << dataGenerator->getWinningPlayer()->getId() << std::endl;
+        std::cout << "Calculated pairings in first round:" << std::endl;
+        writeTree(resultRoot);
+    }
+    else
+        std::cout << "Result not found." << std::endl;
 }
 
 void Interface::solveMeasureTime(size_t algorithm)
 {
+    time_type start, end;
+    duration_type timeElapsed;
 
+    start = std::chrono::system_clock::now();
+    switch (algorithm)
+    {
+        case 1:
+            gameTree->placePlayersBrutal();
+            break;
+        case 2:
+            gameTree->placePlayersStrength();
+            break;
+        case 3:
+            gameTree->placePlayersCSP();
+            break;
+        case 4:
+            gameTree->placePlayersCSPStrength();
+            break;
+        default:
+            break;
+    }
+    end = std::chrono::system_clock::now();
+    timeElapsed = end - start;
+    lines.emplace_back(Line(static_cast<int>(log2(dataGenerator->getPlayerCount())), timeElapsed));
 }
 
 void Interface::writeTree(Node *root)
@@ -82,4 +115,15 @@ void Interface::writeTree(Node *root)
             writeTree(root->right);
         }
     }
+}
+
+void Interface::writeToFile(std::string fileName)
+{
+    std::ofstream outputFile;
+    outputFile.open(fileName);
+    for(auto i: lines)
+    {
+        outputFile << i.playerCount << "," << i.duration.count() << std::endl;
+    }
+    outputFile.close();
 }

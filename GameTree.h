@@ -36,28 +36,21 @@ class GameTree
     size_t treeDepth;
 
     std::vector<Player*> players;
-    std::vector<Node*> nodesToCheck;
-    std::vector<Player*> baseData;
     Player* winningPlayer;
 
     void treeInit();
     void playersStrengthInit();
-    //void randomisePlayersStrength();
     bool domainEmpty();
     std::vector<Node*> domains();
     void deleteTree(Node* node);
-    void createTreeRec(Node* current, int currentDepth);
     std::vector<Node*> availNodes();
     void availNodesRec(Node* current, std::vector<Node *>& nodes);
     bool placePlayersBrutalRec(Node* current, Player* losingPlayer, size_t depth);
     bool placePlayersCSPRec(std::vector<Node*> nodes, int depth);
 
 public:
-    //GameTree() = default;
     GameTree(Player* winningPlayer, std::vector<Player*> players);
     ~GameTree();
-
-    void resetplayerData() {players = baseData;};
 
     Node* placePlayersBrutal();
     Node* placePlayersStrength();

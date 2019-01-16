@@ -4,13 +4,6 @@
 
 #include "Player.h"
 
-Player::Player(std::vector<Player*> losingOpponents, std::vector<Player*> winningOpponents, int id) : id(id)
-{
-    used = false;
-    this->losingOpponents.swap(losingOpponents);
-    this->winningOpponents.swap(winningOpponents);
-}
-
 bool Player::noLosingOpponents()
 {
     for(auto i: losingOpponents)
@@ -24,11 +17,6 @@ bool Player::noLosingOpponents()
 void Player::sortOpponents()
 {
     std::sort(losingOpponents.begin(), losingOpponents.end());
-}
-
-void Player::randomiseOpponents()
-{
-    std::random_shuffle(losingOpponents.begin(),losingOpponents.end());
 }
 
 Player& Player::operator=(const Player &other)

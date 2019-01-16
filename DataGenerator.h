@@ -33,6 +33,7 @@ public:
     Player* getWinningPlayer() const;
     std::vector<Player*> generatePlayers();
     std::vector<Player*> generatePlayersNotRand(std::vector<Pair> matchUps);
+    int getPlayerCount() {return playerCount;};
 };
 
 
