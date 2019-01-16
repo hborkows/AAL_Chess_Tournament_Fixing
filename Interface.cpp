@@ -79,28 +79,30 @@ void Interface::solveMeasureTime(size_t algorithm)
 {
     time_type start, end;
     duration_type timeElapsed;
+    bool writeTime = false;
 
     start = std::chrono::system_clock::now();
     switch (algorithm)
     {
         case 1:
-            gameTree->placePlayersBrutal();
+            writeTime = gameTree->placePlayersBrutal();
             break;
         case 2:
-            gameTree->placePlayersStrength();
+            writeTime = gameTree->placePlayersStrength();
             break;
         case 3:
-            gameTree->placePlayersCSP();
+            writeTime = gameTree->placePlayersCSP();
             break;
         case 4:
-            gameTree->placePlayersCSPStrength();
+            writeTime = gameTree->placePlayersCSPStrength();
             break;
         default:
             break;
     }
     end = std::chrono::system_clock::now();
     timeElapsed = end - start;
-    lines.emplace_back(Line(static_cast<int>(log2(dataGenerator->getPlayerCount())), timeElapsed));
+    if(writeTime)
+        lines.emplace_back(Line(static_cast<int>(log2(dataGenerator->getPlayerCount())), timeElapsed));
 }
 
 void Interface::writeTree(Node *root)

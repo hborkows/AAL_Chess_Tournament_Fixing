@@ -21,7 +21,7 @@ Node::Node(const Node &other)
     this->right = other.right;
 }
 
-GameTree::GameTree(Player *winningPlayer, std::vector<Player*> players)
+GameTree::GameTree(std::vector<Player*> players, Player *winningPlayer)
 {
     this->root = nullptr;
     this->winningPlayer = winningPlayer;

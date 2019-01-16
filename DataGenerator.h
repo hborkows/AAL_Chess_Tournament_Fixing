@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 #include <random>
+#include <ctime>
+#include <cstdlib>
 #include "Player.h"
 
 struct Pair
