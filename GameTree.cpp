@@ -21,10 +21,10 @@ Node::Node(const Node &other)
     this->right = other.right;
 }
 
-GameTree::GameTree(std::vector<Player*> players, Player *winningPlayer)
+GameTree::GameTree(std::vector<Player*> players)
 {
     this->root = nullptr;
-    this->winningPlayer = winningPlayer;
+    this->winningPlayer = nullptr;
     this->players = players;
     this->treeDepth = static_cast<size_t>(log2(players.size())); //use of static_cast, because number of players is specified to be 2^n
                                                                 // and log2(2^n) = n which is an integer

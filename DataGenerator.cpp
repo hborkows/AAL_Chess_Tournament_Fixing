@@ -76,7 +76,6 @@ std::vector<Player *> DataGenerator::generatePlayers()
     {
         winPlayer = result.at(std::rand() % playerCount);
     }
-    int dupa = 0;
 
     return result;
 }

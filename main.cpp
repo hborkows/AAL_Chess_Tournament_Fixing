@@ -30,7 +30,8 @@ int main(int argc, char *argv[])
             }
 
             DataGenerator dg(playerCount, winningPlayer);
-            GameTree gameTree(dg.generatePlayersNotRand(matchUps), dg.getWinningPlayer());
+            GameTree gameTree(dg.generatePlayersNotRand(matchUps));
+            gameTree.setWinningPlayer(dg.getWinningPlayer());
             Interface interface(&gameTree, &dg);
 
             interface.solveBasic(alg);
@@ -51,9 +52,10 @@ int main(int argc, char *argv[])
                 i++;
                 winningPlayer = std::stoi(std::string(argv[i]));
 
-                auto dg = new DataGenerator(playerCount,winningPlayer);
-                auto gameTree = new GameTree(dg->generatePlayers(), dg->getWinningPlayer());
-                Interface interface(gameTree, dg);
+                DataGenerator dg(playerCount,winningPlayer);
+                GameTree gameTree(dg.generatePlayers());
+                gameTree.setWinningPlayer(dg.getWinningPlayer());
+                Interface interface(&gameTree, &dg);
 
                 interface.solveRandomData(alg);
             }
@@ -77,10 +79,12 @@ int main(int argc, char *argv[])
 
                 for(int j = 1; j <= playerCount; j++)
                 {
-                    DataGenerator dg(j, 0);
+
                     for(int k = 0; k < repeatNum; k++)
                     {
-                        GameTree gameTree(dg.generatePlayers(), dg.getWinningPlayer());
+                        DataGenerator dg(j, 0);
+                        GameTree gameTree(dg.generatePlayers());
+                        gameTree.setWinningPlayer(dg.getWinningPlayer());
                         Interface interface(&gameTree, &dg);
 
                         interface.solveMeasureTime(alg);
