@@ -76,9 +76,6 @@ int main(int argc, char *argv[])
                 int repeatNum = std::stoi(std::string(argv[i]));
                 i++;
                 std::string fileName(argv[i]);
-
-//                time_type start, stop;
-//                duration_type elapsedTime;
                 bool stop;
 
                 for(int j = 1; j <= playerCount; j++)
@@ -89,17 +86,13 @@ int main(int argc, char *argv[])
                         stop = false;
                         while(!stop)
                         {
-                            //start = std::chrono::system_clock::now();
                             DataGenerator dg(j, -1);
                             GameTree gameTree(dg.generatePlayers());
                             gameTree.setWinningPlayer(dg.getWinningPlayer());
-                            //stop = std::chrono::system_clock::now();
-                            //elapsedTime = stop - start;
-                            //std::cout << "generator: " << elapsedTime.count() << " s" << std::endl;
                             Interface interface(&gameTree, &dg);
 
                             stop = interface.solveMeasureTime(alg);
-                            //interface.writeToFile(fileName);
+                            interface.writeToFile(fileName);
                         }
                     }
                 }
@@ -111,7 +104,23 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[i], "-help") == 0)
         {
-
+            std::cout << "-mode1 - manual data input" << std::endl;
+            std::cout << "|-----------------------------------------------------------------------------|" << std::endl;
+            std::cout << "-mode2 - random data" << std::endl;
+            std::cout << std::endl;
+            std::cout << "-mode2 [n] [algorithm] [winning player]" << std::endl;
+            std::cout << "[n] - number of players is 2^n" << std::endl;
+            std::cout << "[algorithm] - 1 - brute force, 2 - brute force with players sorted by strength" << std::endl;
+            std::cout << "[winning player] - number from range [0, 2^n)" << std::endl;
+            std::cout << "|-----------------------------------------------------------------------------|" << std::endl;
+            std::cout << "-mode3 - random data with various problem instances and time measurement" << std::endl;
+            std::cout << std::endl;
+            std::cout << "-mode3 [n] [algorithm] [number of repeats] [output file]" << std::endl;
+            std::cout << "[n] - number of players is 2^n" << std::endl;
+            std::cout << "[algorithm] - 1 - brute force, 2 - brute force with players sorted by strength" << std::endl;
+            std::cout << "[number of repeats] - number of times algorithm is measured for one number of players" << std::endl;
+            std::cout << "[output file] - name of a csv file where results are to be stored" << std::endl;
+            std::cout << "|-----------------------------------------------------------------------------|" << std::endl;
         }
         else
         {
