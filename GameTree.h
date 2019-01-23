@@ -49,7 +49,7 @@ class GameTree
     bool placePlayersCSPRec(std::vector<Node*> nodes, int depth);
 
 public:
-    GameTree(std::vector<Player*> players);
+    explicit GameTree(std::vector<Player*> players);
     ~GameTree();
 
     void setWinningPlayer(Player* player) {winningPlayer = player;};

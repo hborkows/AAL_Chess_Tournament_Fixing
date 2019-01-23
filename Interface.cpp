@@ -117,7 +117,6 @@ bool Interface::solveMeasureTime(size_t algorithm)
     }
     else
     {
-        //std::cout << "No result" << std::endl;
         return false;
     }
 }

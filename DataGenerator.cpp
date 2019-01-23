@@ -18,7 +18,6 @@ Player *DataGenerator::getWinningPlayer() const
 
 std::vector<Player *> DataGenerator::generatePlayers()
 {
-    //srand(time(NULL));
     for(int i = 0; i < playerCount; i++)
     {
         for (int j = i + 1; j < playerCount; j++)

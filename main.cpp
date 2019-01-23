@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstring>
-#include <string>
 #include "GameTree.h"
 #include "DataGenerator.h"
 #include "Interface.h"
@@ -124,7 +123,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            std::cout << "Wrong argument!" << std::endl;
+            std::cout << "Wrong argument! Try with -help" << std::endl;
         }
     }
     else
