@@ -31,13 +31,14 @@ class Interface
     std::vector<Line> lines;
 
     void writeTree(Node* root);
+    void writeMatchUps();
 
 public:
     Interface(GameTree*, DataGenerator*);
 
     void solveBasic(size_t algorithm);
     void solveRandomData(size_t algorithm);
-    void solveMeasureTime(size_t algorithm);
+    bool solveMeasureTime(size_t algorithm);
     void writeToFile(std::string fileName);
 };
 

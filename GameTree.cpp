@@ -160,6 +160,7 @@ Node* GameTree::placePlayersBrutal()
 {
     bool flag = false;
     treeInit();
+    winningPlayer->setUsed(true);
 
     for(auto i: winningPlayer->getLosingOpponents())
     {

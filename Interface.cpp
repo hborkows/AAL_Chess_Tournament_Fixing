@@ -70,39 +70,56 @@ void Interface::solveRandomData(size_t algorithm)
         std::cout << "Winning Player: " << dataGenerator->getWinningPlayer()->getId() << std::endl;
         std::cout << "Calculated pairings in first round:" << std::endl;
         writeTree(resultRoot);
+        std::cout << "Match-ups:" << std::endl;
+        writeMatchUps();
     }
     else
         std::cout << "Result not found." << std::endl;
 }
 
-void Interface::solveMeasureTime(size_t algorithm)
+bool Interface::solveMeasureTime(size_t algorithm)
 {
     time_type start, end;
     duration_type timeElapsed;
     bool writeTime = false;
+    int i = 0;
 
-    start = std::chrono::system_clock::now();
-    switch (algorithm)
+    //while(!writeTime)
     {
-        case 1:
-            writeTime = gameTree->placePlayersBrutal();
-            break;
-        case 2:
-            writeTime = gameTree->placePlayersStrength();
-            break;
-        case 3:
-            writeTime = gameTree->placePlayersCSP();
-            break;
-        case 4:
-            writeTime = gameTree->placePlayersCSPStrength();
-            break;
-        default:
-            break;
+        //i++;
+        start = std::chrono::system_clock::now();
+        switch (algorithm)
+        {
+            case 1:
+                writeTime = gameTree->placePlayersBrutal() != nullptr;
+                break;
+            case 2:
+                writeTime = gameTree->placePlayersStrength() != nullptr;
+                break;
+            case 3:
+                writeTime = gameTree->placePlayersCSP() != nullptr;
+                break;
+            case 4:
+                writeTime = gameTree->placePlayersCSPStrength() != nullptr;
+                break;
+            default:
+                break;
+        }
     }
     end = std::chrono::system_clock::now();
     timeElapsed = end - start;
     if(writeTime)
-        lines.emplace_back(Line(static_cast<int>(log2(dataGenerator->getPlayerCount())), timeElapsed));
+    {
+        //lines.emplace_back(Line(static_cast<int>(log2(dataGenerator->getPlayerCount())), timeElapsed));
+        std::cout << static_cast<int>(log2(dataGenerator->getPlayerCount())) << " " << timeElapsed.count() << " s"
+                  << std::endl;
+        return true;
+    }
+    else
+    {
+        //std::cout << "No result" << std::endl;
+        return false;
+    }
 }
 
 void Interface::writeTree(Node *root)
@@ -128,4 +145,15 @@ void Interface::writeToFile(std::string fileName)
         outputFile << i.playerCount << "," << i.duration.count() << std::endl;
     }
     outputFile.close();
+}
+
+void Interface::writeMatchUps()
+{
+    for(auto i: dataGenerator->getMatchUps())
+    {
+        if(i.result)
+            std::cout << "( " << i.left << " , " << i.right << " ) left wins" << std::endl;
+        else
+            std::cout << "( " << i.left << " , " << i.right << " ) right wins" << std::endl;
+    }
 }

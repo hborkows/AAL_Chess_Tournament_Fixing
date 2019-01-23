@@ -77,18 +77,30 @@ int main(int argc, char *argv[])
                 i++;
                 std::string fileName(argv[i]);
 
+//                time_type start, stop;
+//                duration_type elapsedTime;
+                bool stop;
+
                 for(int j = 1; j <= playerCount; j++)
                 {
 
                     for(int k = 0; k < repeatNum; k++)
                     {
-                        DataGenerator dg(j, 0);
-                        GameTree gameTree(dg.generatePlayers());
-                        gameTree.setWinningPlayer(dg.getWinningPlayer());
-                        Interface interface(&gameTree, &dg);
+                        stop = false;
+                        while(!stop)
+                        {
+                            //start = std::chrono::system_clock::now();
+                            DataGenerator dg(j, -1);
+                            GameTree gameTree(dg.generatePlayers());
+                            gameTree.setWinningPlayer(dg.getWinningPlayer());
+                            //stop = std::chrono::system_clock::now();
+                            //elapsedTime = stop - start;
+                            //std::cout << "generator: " << elapsedTime.count() << " s" << std::endl;
+                            Interface interface(&gameTree, &dg);
 
-                        interface.solveMeasureTime(alg);
-                        interface.writeToFile(fileName);
+                            stop = interface.solveMeasureTime(alg);
+                            //interface.writeToFile(fileName);
+                        }
                     }
                 }
             }

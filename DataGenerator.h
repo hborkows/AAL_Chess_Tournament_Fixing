@@ -27,6 +27,7 @@ class DataGenerator
     int playerCount;
     int winningPlayer;
     Player* winPlayer;
+    std::vector<Pair> matchUps;
 
 public:
     DataGenerator(size_t n, int winningPlayer);
@@ -36,6 +37,7 @@ public:
     std::vector<Player*> generatePlayers();
     std::vector<Player*> generatePlayersNotRand(std::vector<Pair> matchUps);
     int getPlayerCount() {return playerCount;};
+    std::vector<Pair> getMatchUps() { return matchUps;};
 };
 
 

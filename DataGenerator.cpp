@@ -8,6 +8,7 @@ DataGenerator::DataGenerator(size_t n, int winningPlayer)
 {
     playerCount = 1 << n;
     this->winningPlayer = winningPlayer;
+    matchUps = std::vector<Pair>();
 }
 
 Player *DataGenerator::getWinningPlayer() const
@@ -17,8 +18,7 @@ Player *DataGenerator::getWinningPlayer() const
 
 std::vector<Player *> DataGenerator::generatePlayers()
 {
-    srand(time(NULL));
-    std::vector<Pair> matchUps;
+    //srand(time(NULL));
     for(int i = 0; i < playerCount; i++)
     {
         for (int j = i + 1; j < playerCount; j++)
@@ -27,9 +27,14 @@ std::vector<Player *> DataGenerator::generatePlayers()
         }
     }
 
-    for(auto i: matchUps)
+    std::random_device rand;
+    std::mt19937 gen(rand());
+    std::bernoulli_distribution dist;
+
+    for(int i = 0; i < matchUps.size(); i++)
     {
-        i.result = static_cast<bool>(std::rand() % 2);
+        bool b = dist(gen);
+        matchUps[i].result = b;
     }
 
     std::vector<Player*> result;
@@ -68,13 +73,23 @@ std::vector<Player *> DataGenerator::generatePlayers()
         }
     }
 
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 eng(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, playerCount - 1);
+
     if(winningPlayer != -1)
     {
         winPlayer = result.at(winningPlayer);
     }
     else
     {
-        winPlayer = result.at(std::rand() % playerCount);
+        while(true)
+        {
+            winPlayer = result.at(distr(eng));
+            if (winPlayer != nullptr && winPlayer->getLosingOpponents().size() >= log2(playerCount))
+                break;
+        }
+
     }
 
     return result;
