@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
                 std::string fileName(argv[i]);
                 bool stop;
 
+                std::vector<Line> lines;
                 for(int j = 1; j <= playerCount; j++)
                 {
 
@@ -88,13 +89,19 @@ int main(int argc, char *argv[])
                             DataGenerator dg(j, -1);
                             GameTree gameTree(dg.generatePlayers());
                             gameTree.setWinningPlayer(dg.getWinningPlayer());
-                            Interface interface(&gameTree, &dg);
+                            Interface interface(&gameTree, &dg, &lines);
 
                             stop = interface.solveMeasureTime(alg);
-                            interface.writeToFile(fileName);
                         }
                     }
                 }
+                std::ofstream outputFile;
+                outputFile.open(fileName);
+                for(auto line: lines)
+                {
+                    outputFile << line.playerCount << "," << line.duration.count() << std::endl;
+                }
+                outputFile.close();
             }
             else
             {

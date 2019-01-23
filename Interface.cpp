@@ -4,10 +4,11 @@
 
 #include "Interface.h"
 
-Interface::Interface(GameTree *gameTree, DataGenerator *dataGenerator): lines()
+Interface::Interface(GameTree *gameTree, DataGenerator *dataGenerator, std::vector<Line>* lines)
 {
     this->gameTree = gameTree;
     this->dataGenerator = dataGenerator;
+    this->lines = lines;
 }
 
 void Interface::solveBasic(size_t algorithm)
@@ -110,7 +111,7 @@ bool Interface::solveMeasureTime(size_t algorithm)
     timeElapsed = end - start;
     if(writeTime)
     {
-        //lines.emplace_back(Line(static_cast<int>(log2(dataGenerator->getPlayerCount())), timeElapsed));
+        lines->emplace_back(Line(static_cast<int>(log2(dataGenerator->getPlayerCount())), timeElapsed));
         std::cout << static_cast<int>(log2(dataGenerator->getPlayerCount())) << " " << timeElapsed.count() << " s"
                   << std::endl;
         return true;
@@ -135,17 +136,6 @@ void Interface::writeTree(Node *root)
     }
 }
 
-void Interface::writeToFile(std::string fileName)
-{
-    std::ofstream outputFile;
-    outputFile.open(fileName);
-    for(auto i: lines)
-    {
-        outputFile << i.playerCount << "," << i.duration.count() << std::endl;
-    }
-    outputFile.close();
-}
-
 void Interface::writeMatchUps()
 {
     for(auto i: dataGenerator->getMatchUps())
@@ -155,4 +145,11 @@ void Interface::writeMatchUps()
         else
             std::cout << "( " << i.left << " , " << i.right << " ) right wins" << std::endl;
     }
+}
+
+Interface::Interface(GameTree * gt, DataGenerator *dg)
+{
+    this->dataGenerator = dg;
+    this->gameTree = gt;
+    this->lines = nullptr;
 }

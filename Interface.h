@@ -28,18 +28,18 @@ class Interface
 {
     GameTree* gameTree;
     DataGenerator* dataGenerator;
-    std::vector<Line> lines;
+    std::vector<Line>* lines;
 
     void writeTree(Node* root);
     void writeMatchUps();
 
 public:
     Interface(GameTree*, DataGenerator*);
+    Interface(GameTree*, DataGenerator*, std::vector<Line>* lines);
 
     void solveBasic(size_t algorithm);
     void solveRandomData(size_t algorithm);
     bool solveMeasureTime(size_t algorithm);
-    void writeToFile(std::string fileName);
 };
 
 
